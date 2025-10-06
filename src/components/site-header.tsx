@@ -152,7 +152,7 @@ export function SiteHeader() {
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-teal-500/20 text-sm font-bold text-teal-300">
             CT
           </span>
-          Cryptotrade Console
+          Boofshop Console
         </Link>
         <div className="flex items-center gap-3">
           <button

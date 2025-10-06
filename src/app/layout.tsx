@@ -15,9 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Cryptotrade Experience Console",
+  title: "Boofshop Experience Console",
   description:
-    "Operational console for Cryptotrade frontend teams to manage catalog, orders, and delivery readiness.",
+    "Operational console for Boofshop frontend teams to manage catalog, orders, and delivery readiness.",
 };
 
 export default function RootLayout({
@@ -38,7 +38,7 @@ export default function RootLayout({
             </main>
             <footer className="border-t border-white/5 bg-slate-950/60 py-6 text-center text-xs text-slate-500">
               <p>
-                Cryptotrade Frontend Suite · Crafted for parity with the Go
+                Boofshop Frontend Suite · Crafted for parity with the Go
                 backend · Tailwind-driven design
               </p>
             </footer>

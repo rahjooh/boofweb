@@ -61,7 +61,7 @@ export default async function Home() {
               Roadmap Control Tower
             </span>
             <h1 className="text-4xl font-semibold text-white sm:text-5xl">
-              Coordinate the Cryptotrade frontend suite with live backend
+              Coordinate the Boofshop frontend suite with live backend
               telemetry
             </h1>
             <p className="text-base text-slate-300">

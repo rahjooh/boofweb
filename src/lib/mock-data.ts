@@ -22,7 +22,7 @@ export const mockHealth: HealthResponse = {
 export const mockProducts: Product[] = [
   {
     id: "btc-ledger",
-    name: "Cryptotrade Ledger Cold Wallet",
+    name: "Boofshop Ledger Cold Wallet",
     description:
       "Secure hardware wallet supporting Bitcoin, Ethereum, and ERC-20 tokens with multi-sig compatibility.",
     price: 189.99,
@@ -100,7 +100,7 @@ export const mockOrders: Order[] = [
       },
       {
         productId: "btc-ledger",
-        name: "Cryptotrade Ledger Cold Wallet",
+        name: "Boofshop Ledger Cold Wallet",
         quantity: 1,
         price: 189.99,
         currency: "USD",
@@ -124,7 +124,7 @@ export const mockOrders: Order[] = [
       },
       {
         productId: "btc-ledger",
-        name: "Cryptotrade Ledger Cold Wallet",
+        name: "Boofshop Ledger Cold Wallet",
         quantity: 1,
         price: 189.99,
         currency: "USD",
@@ -153,7 +153,7 @@ export const mockOrders: Order[] = [
 export const mockBlogPosts: BlogPost[] = [
   {
     id: "post-btc-insights",
-    producerId: "cryptotrade",
+    producerId: "Boofshop",
     title: "Building Trust with Cold Storage",
     slug: "building-trust-with-cold-storage",
     excerpt:
@@ -161,7 +161,7 @@ export const mockBlogPosts: BlogPost[] = [
     contentMarkdown:
       "## Why custody matters\n\nOperators rely on audited cold storage with multi-sig enforcement to protect treasury allocations at scale. We continuously test incident response and rotate access with short-lived credentials.",
     coverImageUrl:
-      "https://images.cryptotrade.example/assets/cold-storage-vault.jpg",
+      "https://images.Boofshop.example/assets/cold-storage-vault.jpg",
     tags: ["security", "custody"],
     isDraft: false,
     publishedAt: subDays(now, 4).toISOString(),
@@ -170,7 +170,7 @@ export const mockBlogPosts: BlogPost[] = [
   },
   {
     id: "post-launchpad",
-    producerId: "cryptotrade",
+    producerId: "Boofshop",
     title: "Introducing the Validator Launchpad",
     slug: "introducing-the-validator-launchpad",
     excerpt:
@@ -178,7 +178,7 @@ export const mockBlogPosts: BlogPost[] = [
     contentMarkdown:
       "## Launchpad preview\n\nWe orchestrate validator fleets with automated rollbacks. Terraform modules bootstrap hardware, and observability dashboards flag liveness within seconds of deployment.",
     coverImageUrl:
-      "https://images.cryptotrade.example/assets/validator-launchpad.png",
+      "https://images.Boofshop.example/assets/validator-launchpad.png",
     tags: ["infrastructure", "product"],
     isDraft: false,
     publishedAt: subDays(now, 12).toISOString(),
@@ -187,7 +187,7 @@ export const mockBlogPosts: BlogPost[] = [
   },
   {
     id: "post-roadmap-q4",
-    producerId: "cryptotrade",
+    producerId: "Boofshop",
     title: "Q4 Roadmap: Wallet SDK, DeFi Perimeters",
     slug: "q4-roadmap-wallet-sdk-defi",
     excerpt:

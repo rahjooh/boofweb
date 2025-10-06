@@ -1,4 +1,4 @@
-# Cryptotrade Console Code Walkthrough
+# Boofshop Console Code Walkthrough
 
 Welcome! This guide explains what each key file in the project does, how the pieces connect, and how to reason about them even if you are brand new to Next.js. Keep it handy while you explore or extend the app.
 
@@ -49,7 +49,7 @@ Because Fetch requests happen through the helpers in `src/lib/api-client.ts`, th
 
 - **`src/app/layout.tsx`**
   - Imports the Geist font families so typography is consistent across the app.
-  - Sets the `metadata` object, naming the app "Cryptotrade Experience Console" and describing its purpose. Next.js uses this for `<title>` tags and SEO defaults.
+  - Sets the `metadata` object, naming the app "Boofshop Experience Console" and describing its purpose. Next.js uses this for `<title>` tags and SEO defaults.
   - Wraps everything in `AppProviders` and renders the `SiteHeader`, a centered `<main>` container, and a footer with product copy.
 
 - **`src/components/site-header.tsx`**

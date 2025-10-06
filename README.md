@@ -1,6 +1,6 @@
-# Cryptotrade Experience Console
+# boofweb Experience Console
 
-Next.js 15 control surface that mirrors the "Cryptotrade Frontend Build Brief" and connects to the Go commerce API.
+Next.js 15 control surface that mirrors the "boofweb Frontend Build Brief" and connects to the Go commerce API.
 It provides:
 
 - Catalog management views with search, status filters, and navigation to product details

@@ -13,7 +13,7 @@ interface StorefrontBlogPageProps {
 export async function generateStaticParams() {
   const producers = new Set(mockBlogPosts.map((post) => post.producerId));
   if (producers.size === 0) {
-    producers.add("cryptotrade");
+    producers.add("Boofshop");
   }
   return Array.from(producers).map((producerId) => ({ producerId }));
 }
@@ -23,7 +23,7 @@ export async function generateMetadata({
 }: StorefrontBlogPageProps): Promise<Metadata> {
   const { producerId } = await params;
   const posts = await getStorefrontBlogPosts(producerId).catch(() => []);
-  const description = posts[0]?.excerpt ?? "Latest stories from the Cryptotrade team.";
+  const description = posts[0]?.excerpt ?? "Latest stories from the Boofshop team.";
   const title = `${capitalize(producerId)} blog`;
   return {
     title,
@@ -48,7 +48,7 @@ export default async function StorefrontBlogPage({
             {producerId}
           </span>
           <h1 className="text-4xl font-semibold text-white sm:text-5xl">
-            Stories from the Cryptotrade producers
+            Stories from the Boofshop producers
           </h1>
           <p className="text-base text-slate-200">
             Field notes, product updates, and playbooks shipped directly from

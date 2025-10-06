@@ -435,7 +435,7 @@ function buildMockUser(): User {
 }
 
 function buildMockBlogInsights(producerId: string): BlogInsightsSummary {
-  if (producerId === "cryptotrade") {
+  if (producerId === "Boofshop") {
     return mockBlogInsights;
   }
 

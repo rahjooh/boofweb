@@ -83,7 +83,7 @@ export function PublicProductsView({ products }: PublicProductsViewProps) {
             </h1>
             <p className="text-base text-slate-200">
               Explore ready-to-ship hardware, staking infrastructure, and SaaS
-              analytics curated by the Cryptotrade team.
+              analytics curated by the Boofshop team.
             </p>
             <div className="flex flex-wrap gap-3 text-xs text-slate-200">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 font-medium">

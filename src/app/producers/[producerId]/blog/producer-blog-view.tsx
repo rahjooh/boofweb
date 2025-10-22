@@ -129,7 +129,10 @@ export function ProducerBlogView({
         createdAt: now,
         updatedAt: now,
       };
-      queryClient.setQueryData(postsQueryKey, [optimistic, ...previous]);
+      queryClient.setQueryData<BlogPost[]>(
+        postsQueryKey,
+        [optimistic, ...previous],
+      );
       setSelectedId(tempId);
       return { previous, tempId };
     },
@@ -144,9 +147,12 @@ export function ProducerBlogView({
       });
     },
     onSuccess: (post, _input, context) => {
-      queryClient.setQueryData(postsQueryKey, (current = []) =>
-        current.map((item) => (item.id === context?.tempId ? post : item)),
-      );
+      queryClient.setQueryData<BlogPost[]>(postsQueryKey, (current) => {
+        const existing = current ?? [];
+        return existing.map((item) =>
+          item.id === context?.tempId ? post : item,
+        );
+      });
       setSelectedId(post.id);
       pushToast({
         title: post.isDraft ? "Draft saved" : "Post published",
@@ -165,8 +171,9 @@ export function ProducerBlogView({
       await queryClient.cancelQueries({ queryKey: postsQueryKey });
       const previous = queryClient.getQueryData<BlogPost[]>(postsQueryKey) ?? [];
       const now = new Date().toISOString();
-      queryClient.setQueryData(postsQueryKey, (current = []) =>
-        current.map((post) =>
+      queryClient.setQueryData<BlogPost[]>(postsQueryKey, (current) => {
+        const existing = current ?? [];
+        return existing.map((post) =>
           post.id === postId
             ? {
                 ...post,
@@ -192,8 +199,8 @@ export function ProducerBlogView({
                 updatedAt: now,
               }
             : post,
-        ),
-      );
+        );
+      });
       return { previous };
     },
     onError: (error, _variables, context) => {
@@ -207,9 +214,10 @@ export function ProducerBlogView({
       });
     },
     onSuccess: (post) => {
-      queryClient.setQueryData(postsQueryKey, (current = []) =>
-        current.map((item) => (item.id === post.id ? post : item)),
-      );
+      queryClient.setQueryData<BlogPost[]>(postsQueryKey, (current) => {
+        const existing = current ?? [];
+        return existing.map((item) => (item.id === post.id ? post : item));
+      });
       pushToast({
         title: post.isDraft ? "Draft updated" : "Post updated",
         kind: post.isDraft ? "info" : "success",

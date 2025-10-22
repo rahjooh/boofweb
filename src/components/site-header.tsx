@@ -9,6 +9,12 @@ import { logout } from "@/lib/api-client";
 import { AUTH_QUERY_KEY, useAuth } from "@/lib/auth";
 import { getDefaultProducerId } from "@/lib/env";
 
+type NavItem = {
+  href: string;
+  label: string;
+  disabled?: boolean;
+};
+
 export function SiteHeader() {
   const pathname = usePathname();
   const router = useRouter();
@@ -17,8 +23,8 @@ export function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const previousPathname = useRef(pathname);
   const defaultProducerId = getDefaultProducerId();
-  const navItems = useMemo(() => {
-    const items = [
+  const navItems = useMemo<NavItem[]>(() => {
+    const items: NavItem[] = [
       { href: "/", label: "Overview" },
       { href: "/products", label: "Products" },
       { href: `/store/${defaultProducerId}/blog`, label: "Blog" },

@@ -9,17 +9,16 @@ import { logout } from "@/lib/api-client";
 import { AUTH_QUERY_KEY, useAuth } from "@/lib/auth";
 import { getDefaultProducerId } from "@/lib/env";
 
-type BaseNavItem = {
-  href: string;
-  label: string;
-};
-
-type DisabledNavItem = {
-  label: string;
-  disabled: true;
-};
-
-type NavItem = BaseNavItem | DisabledNavItem;
+type NavItem =
+  | {
+      label: string;
+      href: string;
+      disabled?: false;
+    }
+  | {
+      label: string;
+      disabled: true;
+    };
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -76,7 +75,7 @@ export function SiteHeader() {
     () => (
       <nav className="hidden items-center gap-2 text-sm font-medium text-slate-300 md:flex">
         {navItems.map((item) => {
-          if ("disabled" in item && item.disabled) {
+          if (item.disabled) {
             return (
               <span
                 key={item.label}
@@ -86,10 +85,6 @@ export function SiteHeader() {
                 {item.label}
               </span>
             );
-          }
-
-          if (!("href" in item)) {
-            return null;
           }
 
           const isActive =
@@ -208,7 +203,7 @@ export function SiteHeader() {
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-4 sm:px-10">
           <nav className="flex flex-col gap-2 text-sm font-medium text-slate-200">
             {navItems.map((item) => {
-              if ("disabled" in item && item.disabled) {
+              if (item.disabled) {
                 return (
                   <span
                     key={item.label}
@@ -218,10 +213,6 @@ export function SiteHeader() {
                     {item.label}
                   </span>
                 );
-              }
-
-              if (!("href" in item)) {
-                return null;
               }
 
               const isActive =

@@ -676,47 +676,53 @@ export async function createUser(input: CreateUserInput): Promise<User> {
     };
   }
 
-    try {
-        const data = await request<unknown>("/api/v1/auth/me", {
-            method: "GET",
-            cache: "no-store",
-            ...init,
-            headers: {
-                ...(init?.headers instanceof Headers
-                    ? Object.fromEntries(init.headers.entries())
-                    : (init?.headers as Record<string, string> | undefined)),
-            },
-        });
+  const data = await request<unknown>("/api/v1/users", {
+    method: "POST",
+    body: JSON.stringify({
+      name: input.name,
+      email: input.email,
+      mobile: input.mobile,
+      password: input.password,
+    }),
+    cache: "no-store",
+  });
 
-        return userSchema.parse(data);
-    } catch (error) {
-        if (isApiClientError(error) || !isNetworkError(error)) {
-            throw error;
-        }
-
-        console.warn("Assuming unauthenticated session due to network error", error);
-        const unauthorizedError = new Error("Authentication required") as ApiClientError;
-        unauthorizedError.status = 401;
-        throw unauthorizedError;
-    }
+  return userSchema.parse(data);
+}
 
 export async function getCurrentUser(init?: RequestInit): Promise<User> {
   if (getMockMode()) {
     return buildMockUser();
   }
 
-  const data = await request<unknown>("/api/v1/auth/me", {
-    method: "GET",
-    cache: "no-store",
-    ...init,
-    headers: {
-      ...(init?.headers instanceof Headers
-        ? Object.fromEntries(init.headers.entries())
-        : (init?.headers as Record<string, string> | undefined)),
-    },
-  });
+  try {
+    const data = await request<unknown>("/api/v1/auth/me", {
+      method: "GET",
+      cache: "no-store",
+      ...init,
+      headers: {
+        ...(init?.headers instanceof Headers
+          ? Object.fromEntries(init.headers.entries())
+          : (init?.headers as Record<string, string> | undefined)),
+      },
+    });
 
-  return userSchema.parse(data);
+    return userSchema.parse(data);
+  } catch (error) {
+    if (isApiClientError(error) || !isNetworkError(error)) {
+      throw error;
+    }
+
+    console.warn(
+      "Assuming unauthenticated session due to network error",
+      error,
+    );
+    const unauthorizedError = new Error(
+      "Authentication required",
+    ) as ApiClientError;
+    unauthorizedError.status = 401;
+    throw unauthorizedError;
+  }
 }
 
 export async function activateUser(input: ActivateUserInput): Promise<void> {

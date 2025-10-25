@@ -18,7 +18,11 @@ export function SiteHeader() {
   const previousPathname = useRef(pathname);
   const defaultProducerId = getDefaultProducerId();
   const navItems = useMemo(() => {
-    const items = [
+      const items: Array<{
+          href: string;
+          label: string;
+          disabled?: boolean;
+      }> = [
       { href: "/", label: "Overview" },
       { href: "/products", label: "Products" },
       { href: `/store/${defaultProducerId}/blog`, label: "Blog" },

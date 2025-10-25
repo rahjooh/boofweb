@@ -175,7 +175,7 @@ const healthSchema = z.object({
   status: z.string(),
   version: z.string().optional(),
   uptime: z.string().optional(),
-  dependencies: z.record(z.string()).optional(),
+  dependencies: z.record(z.string(), z.string()).optional(),
 });
 
 type ApiClientError = Error & {

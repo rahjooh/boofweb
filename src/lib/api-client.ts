@@ -187,6 +187,25 @@ function isApiClientError(error: unknown): error is ApiClientError {
   return error instanceof Error && "status" in error;
 }
 
+
+function isNetworkError(error: unknown): error is TypeError {
+    if (!(error instanceof TypeError)) {
+        return false;
+    }
+
+    if (typeof error.message === "string" && error.message.toLowerCase().includes("fetch failed")) {
+        return true;
+    }
+
+    const cause = (error as { cause?: unknown }).cause;
+    return Boolean(
+        cause &&
+        typeof cause === "object" &&
+        "code" in cause &&
+        typeof (cause as { code?: unknown }).code === "string",
+    );
+}
+
 export function isUnauthorizedError(error: unknown): error is ApiClientError {
   return isApiClientError(error) && error.status === 401;
 }

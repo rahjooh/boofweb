@@ -24,7 +24,7 @@ export function FeatureHighlights() {
     <section className="rounded-[32px] border border-amber-100 bg-white/80 px-6 py-12 shadow-lg shadow-amber-100/50 sm:px-10">
       <div className="mx-auto max-w-5xl text-center">
         <h2 className="text-3xl font-black text-slate-900 sm:text-4xl">
-          چرا لابراتوار پت را انتخاب کنیم؟
+          چرا بوف  را انتخاب کنیم؟
         </h2>
         <p className="mt-4 text-base text-slate-600">
           ترکیب هوشمند علوم تغذیه حیوانات خانگی با سبک زندگی خانواده‌های ایرانی،

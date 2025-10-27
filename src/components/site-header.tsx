@@ -158,7 +158,7 @@ export function SiteHeader() {
           <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-emerald-500/15 text-lg text-emerald-600">
             🐾
           </span>
-          لابراتوار پت
+          بوف 
         </Link>
         <div className="flex items-center gap-3">
           <button

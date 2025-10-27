@@ -25,7 +25,7 @@ export function ProductShowcase({ products }: { products: Product[] }) {
           </h2>
           <p className="mt-2 max-w-xl text-sm text-slate-600">
             مکمل‌های پروبیوتیک، پودرهای مراقبت از مفاصل و میان‌وعده‌های کم‌چرب که
-            مورد تایید دامپزشکان شبکه لابراتوار پت است.
+            مورد تایید دامپزشکان شبکه بوف  است.
           </p>
         </div>
         <Link

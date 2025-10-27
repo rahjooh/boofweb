@@ -11,7 +11,7 @@ const vazirmatn = Vazirmatn({
 });
 
 export const metadata: Metadata = {
-  title: "لابراتوار پت | تغذیه تخصصی سگ‌ها",
+  title: "بوف  | تغذیه تخصصی سگ‌ها",
   description:
     "مکمل‌ها و برنامه‌های تغذیه‌ای علمی برای سگ‌های خانگی با ارسال منظم، پشتیبانی دامپزشکی و محتوای فارسی.",
 };
@@ -34,7 +34,7 @@ export default function RootLayout({
             </main>
             <footer className="border-t border-emerald-100/60 bg-emerald-50/80 py-6 text-center text-xs text-emerald-700">
               <p>
-                لابراتوار پت · ساخته شده با عشق به حیوانات خانگی · پشتیبانی
+                بوف  · ساخته شده با عشق به حیوانات خانگی · پشتیبانی
                 تلفنی ۷ روز هفته
               </p>
             </footer>

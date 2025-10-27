@@ -52,8 +52,10 @@ export function PublicProductsView({ products }: PublicProductsViewProps) {
         return b.price - a.price;
       }
       if (sort === "newest") {
-        return new Date(b.updatedAt ?? b.createdAt ?? Date.now()).getTime() -
-          new Date(a.updatedAt ?? a.createdAt ?? Date.now()).getTime();
+        return (
+          new Date(b.updatedAt ?? b.createdAt ?? Date.now()).getTime() -
+          new Date(a.updatedAt ?? a.createdAt ?? Date.now()).getTime()
+        );
       }
       return (
         new Date(b.updatedAt ?? b.createdAt ?? Date.now()).getTime() -
@@ -88,13 +90,14 @@ export function PublicProductsView({ products }: PublicProductsViewProps) {
             <div className="flex flex-wrap gap-3 text-xs text-slate-200">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 font-medium">
                 <svg
-                  aria-hidden
+                  aria-hidden="true"
                   className="h-4 w-4"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.5"
                 >
+                  <title>ارسال سریع</title>
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -105,13 +108,14 @@ export function PublicProductsView({ products }: PublicProductsViewProps) {
               </span>
               <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 font-medium">
                 <svg
-                  aria-hidden
+                  aria-hidden="true"
                   className="h-4 w-4"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.5"
                 >
+                  <title>روش‌های پرداخت انعطاف‌پذیر</title>
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -122,13 +126,14 @@ export function PublicProductsView({ products }: PublicProductsViewProps) {
               </span>
               <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 font-medium">
                 <svg
-                  aria-hidden
+                  aria-hidden="true"
                   className="h-4 w-4"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.5"
                 >
+                  <title>پشتیبانی شبانه‌روزی</title>
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -145,7 +150,9 @@ export function PublicProductsView({ products }: PublicProductsViewProps) {
             </span>
             <span className="text-lg font-semibold text-white">
               {formatDate(
-                sorted[0]?.updatedAt ?? sorted[0]?.createdAt ?? new Date().toISOString(),
+                sorted[0]?.updatedAt ??
+                  sorted[0]?.createdAt ??
+                  new Date().toISOString(),
               )}
             </span>
             <p className="text-xs text-slate-400">
@@ -167,20 +174,22 @@ export function PublicProductsView({ products }: PublicProductsViewProps) {
           <div className="space-y-1">
             <h2 className="text-xl font-semibold text-white">Catalog</h2>
             <p className="text-sm text-slate-400">
-              Filter by tag, search by name, or sort by price to find your next release.
+              Filter by tag, search by name, or sort by price to find your next
+              release.
             </p>
           </div>
           <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row md:items-center">
             <div className="flex-1 md:flex-none">
               <label className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200">
                 <svg
-                  aria-hidden
+                  aria-hidden="true"
                   className="h-4 w-4"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.5"
                 >
+                  <title>جستجوی محصولات</title>
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -255,9 +264,7 @@ export function PublicProductsView({ products }: PublicProductsViewProps) {
                 <h3 className="text-2xl font-semibold text-white">
                   {product.name}
                 </h3>
-                <p className="text-sm text-slate-300">
-                  {product.description}
-                </p>
+                <p className="text-sm text-slate-300">{product.description}</p>
               </header>
 
               <dl className="space-y-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-200">
@@ -292,13 +299,14 @@ export function PublicProductsView({ products }: PublicProductsViewProps) {
                 >
                   Operator detail
                   <svg
-                    aria-hidden
+                    aria-hidden="true"
                     className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="1.5"
                   >
+                    <title>جزئیات بیشتر</title>
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -319,7 +327,8 @@ export function PublicProductsView({ products }: PublicProductsViewProps) {
 
         {sorted.length === 0 ? (
           <div className="rounded-3xl border border-dashed border-white/20 bg-slate-950/60 p-12 text-center text-sm text-slate-400">
-            No products match your filters yet. Try adjusting keywords or tag selections.
+            No products match your filters yet. Try adjusting keywords or tag
+            selections.
           </div>
         ) : null}
       </section>

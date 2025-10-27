@@ -55,9 +55,10 @@ function serialize(value: unknown): unknown {
       errorObject.cause = serialize(value.cause);
     }
 
+    const extraProperties = value as unknown as Record<string, unknown>;
     for (const key of Object.getOwnPropertyNames(value)) {
       if (!(key in errorObject)) {
-        errorObject[key] = serialize((value as Record<string, unknown>)[key]);
+        errorObject[key] = serialize(extraProperties[key]);
       }
     }
 

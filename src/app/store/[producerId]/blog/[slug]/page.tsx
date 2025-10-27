@@ -8,7 +8,7 @@ import {
 } from "@/lib/api-client";
 import { markdownToHtml } from "@/lib/markdown";
 import { mockBlogPosts } from "@/lib/mock-data";
-import { formatDate } from "@/lib/utils";
+import { formatDate, getProducerDisplayName } from "@/lib/utils";
 
 export const revalidate = 300;
 
@@ -26,13 +26,14 @@ export async function generateMetadata({
   params,
 }: StorefrontBlogPostPageProps): Promise<Metadata> {
   const { producerId, slug } = await params;
+  const producerName = getProducerDisplayName(producerId);
   try {
     const post = await getStorefrontBlogPost(producerId, slug);
     if (!post) {
-      return { title: "Blog post" };
+      return { title: "مطلب وبلاگ" };
     }
     return {
-      title: `${post.title} · ${capitalize(producerId)} blog`,
+      title: `${post.title} · وبلاگ ${producerName}`,
       description: post.excerpt,
       alternates: {
         canonical: `/store/${producerId}/blog/${post.slug}`,
@@ -51,7 +52,7 @@ export async function generateMetadata({
       },
     };
   } catch (_error) {
-    return { title: "Blog post" };
+    return { title: "مطلب وبلاگ" };
   }
 }
 
@@ -67,6 +68,7 @@ export default async function StorefrontBlogPostPage({
   const html = markdownToHtml(post.contentMarkdown);
   const related = await getStorefrontBlogPosts(producerId).catch(() => []);
   const recent = related.filter((item) => item.slug !== post.slug).slice(0, 3);
+  const producerName = getProducerDisplayName(producerId);
 
   return (
     <div className="space-y-10">
@@ -75,12 +77,12 @@ export default async function StorefrontBlogPostPage({
           href={`/store/${producerId}/blog`}
           className="inline-flex items-center gap-2 text-teal-200 hover:text-white"
         >
-          ← Back to blog
+          بازگشت به وبلاگ ←
         </Link>
       </nav>
       <header className="space-y-4">
         <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.35em] text-teal-200">
-          <span>{capitalize(producerId)}</span>
+          <span>{producerName}</span>
           <span className="text-slate-500">•</span>
           <span>{formatDate(post.publishedAt ?? post.updatedAt)}</span>
           {post.tags.map((tag) => (
@@ -117,7 +119,7 @@ export default async function StorefrontBlogPostPage({
       {recent.length ? (
         <section className="space-y-4 rounded-3xl border border-white/10 bg-slate-950/60 p-6">
           <h2 className="text-xl font-semibold text-white">
-            More from the producer
+            مطالب بیشتر از {producerName}
           </h2>
           <div className="grid gap-4 md:grid-cols-3">
             {recent.map((item) => (
@@ -127,7 +129,7 @@ export default async function StorefrontBlogPostPage({
                 className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-200 transition hover:border-teal-400/40 hover:text-white"
               >
                 <span className="text-xs uppercase tracking-[0.35em] text-teal-200">
-                  {item.tags[0] ?? "update"}
+                  {item.tags[0] ?? "به‌روزرسانی"}
                 </span>
                 <span className="text-base font-semibold text-white">
                   {item.title}
@@ -142,9 +144,4 @@ export default async function StorefrontBlogPostPage({
       ) : null}
     </div>
   );
-}
-
-function capitalize(value: string) {
-  if (!value) return "";
-  return value.charAt(0).toUpperCase() + value.slice(1);
 }

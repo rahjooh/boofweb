@@ -51,11 +51,7 @@ export function AccountView({ onActivationComplete }: AccountViewProps = {}) {
     },
   });
 
-  const activateMutation = useMutation<
-    void,
-    unknown,
-    ActivateUserInput
-  >({
+  const activateMutation = useMutation<void, unknown, ActivateUserInput>({
     mutationFn: activateUser,
     onSuccess: () => {
       setStep("activated");

@@ -1,5 +1,6 @@
-import Link from "next/link";
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import { getStorefrontBlogPosts } from "@/lib/api-client";
 import { mockBlogPosts } from "@/lib/mock-data";
 import { formatDate } from "@/lib/utils";
@@ -23,7 +24,8 @@ export async function generateMetadata({
 }: StorefrontBlogPageProps): Promise<Metadata> {
   const { producerId } = await params;
   const posts = await getStorefrontBlogPosts(producerId).catch(() => []);
-  const description = posts[0]?.excerpt ?? "Latest stories from the Boofshop team.";
+  const description =
+    posts[0]?.excerpt ?? "Latest stories from the Boofshop team.";
   const title = `${capitalize(producerId)} blog`;
   return {
     title,
@@ -57,40 +59,55 @@ export default async function StorefrontBlogPage({
           <div className="flex flex-wrap gap-3 text-xs text-slate-200">
             <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 font-medium">
               <svg
-                aria-hidden
+                aria-hidden="true"
                 className="h-4 w-4"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="1.5"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2" />
+                <title>بینش هفتگی</title>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 6v6l4 2"
+                />
               </svg>
               Weekly insights
             </span>
             <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 font-medium">
               <svg
-                aria-hidden
+                aria-hidden="true"
                 className="h-4 w-4"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="1.5"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16m-7 5h7" />
+                <title>مصاحبه‌های اپراتوری</title>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 7h16M4 12h16m-7 5h7"
+                />
               </svg>
               Operator interviews
             </span>
             <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 font-medium">
               <svg
-                aria-hidden
+                aria-hidden="true"
                 className="h-4 w-4"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="1.5"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l2.5 2" />
+                <title>آمادگی عرضه</title>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 6v6l2.5 2"
+                />
               </svg>
               Launch readiness
             </span>
@@ -114,11 +131,14 @@ export default async function StorefrontBlogPage({
             >
               {post.coverImageUrl ? (
                 <div className="relative h-48 w-full overflow-hidden bg-slate-900">
-                  <img
+                  <Image
                     src={post.coverImageUrl}
-                    alt=""
-                    className="h-full w-full object-cover opacity-90"
+                    alt={post.title}
+                    fill
+                    className="object-cover opacity-90"
+                    sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
                     loading="lazy"
+                    unoptimized
                   />
                 </div>
               ) : null}
@@ -127,7 +147,9 @@ export default async function StorefrontBlogPage({
                   <div className="flex items-center gap-2 text-xs uppercase tracking-[0.35em] text-teal-200">
                     <span>{post.tags[0] ?? "update"}</span>
                     <span className="text-slate-500">•</span>
-                    <span>{formatDate(post.publishedAt ?? post.updatedAt)}</span>
+                    <span>
+                      {formatDate(post.publishedAt ?? post.updatedAt)}
+                    </span>
                   </div>
                   <h3 className="text-2xl font-semibold text-white">
                     {post.title}
@@ -141,17 +163,27 @@ export default async function StorefrontBlogPage({
                   >
                     Read post
                     <svg
-                      aria-hidden
+                      aria-hidden="true"
                       className="h-4 w-4"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="1.5"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                      <title>خواندن مطلب</title>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M9 5l7 7-7 7"
+                      />
                     </svg>
                   </Link>
-                  <span>{post.tags.slice(1).map((tag) => `#${tag}`).join(" ")}</span>
+                  <span>
+                    {post.tags
+                      .slice(1)
+                      .map((tag) => `#${tag}`)
+                      .join(" ")}
+                  </span>
                 </div>
               </div>
             </article>

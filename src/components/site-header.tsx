@@ -18,14 +18,15 @@ export function SiteHeader() {
   const previousPathname = useRef(pathname);
   const defaultProducerId = getDefaultProducerId();
   const navItems = useMemo(() => {
-      const items: Array<{
-          href: string;
-          label: string;
-          disabled?: boolean;
-      }> = [
-      { href: "/", label: "Overview" },
-      { href: "/products", label: "Products" },
-      { href: `/store/${defaultProducerId}/blog`, label: "Blog" },
+    const items: Array<{
+      href: string;
+      label: string;
+      disabled?: boolean;
+    }> = [
+      { href: "/", label: "خانه" },
+      { href: "/products", label: "محصولات" },
+      { href: "/#membership", label: "باشگاه سلامت" },
+      { href: `/store/${defaultProducerId}/blog`, label: "مجله تربیت" },
     ];
 
     const role = authQuery.data?.role;
@@ -34,12 +35,12 @@ export function SiteHeader() {
     if (isProducer) {
       items.push({
         href: `/producers/${defaultProducerId}/blog`,
-        label: "Blog console",
+        label: "مدیریت وبلاگ",
       });
     }
 
     if (role === "admin") {
-      items.push({ href: "/orders", label: "Orders" });
+      items.push({ href: "/orders", label: "سفارش‌ها" });
     }
 
     return items;
@@ -66,13 +67,13 @@ export function SiteHeader() {
 
   const desktopNav = useMemo(
     () => (
-      <nav className="hidden items-center gap-2 text-sm font-medium text-slate-300 md:flex">
+      <nav className="hidden items-center gap-2 text-sm font-semibold text-slate-700 md:flex">
         {navItems.map((item) => {
           if (item.disabled) {
             return (
               <span
                 key={item.label}
-                className="cursor-not-allowed rounded-full px-4 py-2 text-slate-600"
+                className="cursor-not-allowed rounded-full px-4 py-2 text-slate-400"
                 aria-disabled
               >
                 {item.label}
@@ -80,9 +81,10 @@ export function SiteHeader() {
             );
           }
 
+          const hrefWithoutHash = item.href.split("#")[0];
           const isActive =
-            pathname === item.href ||
-            (item.href !== "/" && pathname.startsWith(item.href));
+            pathname === hrefWithoutHash ||
+            (hrefWithoutHash !== "/" && pathname.startsWith(hrefWithoutHash));
 
           return (
             <Link
@@ -91,8 +93,8 @@ export function SiteHeader() {
               className={clsx(
                 "rounded-full px-4 py-2 transition",
                 isActive
-                  ? "bg-teal-500/20 text-teal-200 shadow-[0_0_0_1px_rgba(45,212,191,0.4)]"
-                  : "hover:bg-white/5 hover:text-white",
+                  ? "bg-emerald-500/10 text-emerald-700 shadow-[0_0_0_1px_rgba(16,185,129,0.35)]"
+                  : "hover:bg-emerald-100/60 hover:text-emerald-700",
               )}
             >
               {item.label}
@@ -105,16 +107,16 @@ export function SiteHeader() {
   );
 
   const renderAuthControls = (showNameOnMobile: boolean) => (
-    <div className="flex flex-wrap items-center gap-3 text-xs text-slate-300">
+    <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600">
       {authQuery.isLoading ? (
-        <span className="rounded-full border border-white/5 px-4 py-1 text-slate-400">
-          Checking auth…
+        <span className="rounded-full border border-emerald-100 px-4 py-1 text-slate-500">
+          در حال بررسی حساب...
         </span>
       ) : authQuery.data ? (
         <>
           <span
             className={clsx(
-              "text-slate-400",
+              "text-slate-500",
               showNameOnMobile ? "inline" : "hidden md:inline",
             )}
           >
@@ -122,51 +124,51 @@ export function SiteHeader() {
           </span>
           <Link
             href="/account"
-            className="rounded-full border border-white/10 px-4 py-1 text-sm font-medium text-white/80 transition hover:border-teal-400/40 hover:text-white"
+            className="rounded-full border border-emerald-200 px-4 py-1 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50"
           >
-            Account
+            حساب کاربری
           </Link>
           <button
             type="button"
             onClick={() => logoutMutation.mutate()}
             disabled={logoutMutation.isPending}
-            className="rounded-full border border-white/10 px-4 py-1 text-sm font-medium text-white/80 transition hover:border-teal-400/40 hover:text-white disabled:cursor-not-allowed disabled:border-white/10 disabled:text-slate-500"
+            className="rounded-full border border-emerald-200 px-4 py-1 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50 disabled:cursor-not-allowed disabled:border-emerald-100 disabled:text-slate-400"
           >
-            {logoutMutation.isPending ? "Signing out..." : "Sign out"}
+            {logoutMutation.isPending ? "در حال خروج..." : "خروج"}
           </button>
         </>
       ) : (
         <Link
           href="/login"
-          className="rounded-full border border-white/10 px-4 py-1 text-sm font-medium text-white/80 transition hover:border-teal-400/40 hover:text-white"
+          className="rounded-full border border-emerald-200 px-4 py-1 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50"
         >
-          Sign in
+          ورود / ثبت‌نام
         </Link>
       )}
     </div>
   );
 
   return (
-    <header className="border-b border-white/5 bg-slate-950/80 backdrop-blur">
+    <header className="border-b border-emerald-100 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 sm:px-10">
         <Link
           href="/"
-          className="flex items-center gap-2 text-base font-semibold text-white"
+          className="flex items-center gap-3 text-base font-extrabold text-slate-900"
         >
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-teal-500/20 text-sm font-bold text-teal-300">
-            CT
+          <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-emerald-500/15 text-lg text-emerald-600">
+            🐾
           </span>
-          Boofshop Console
+          لابراتوار پت
         </Link>
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => setIsMenuOpen((current) => !current)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-slate-200 transition hover:border-teal-400/40 hover:text-white md:hidden"
-            aria-label="Toggle navigation menu"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-emerald-200 text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-50 md:hidden"
+            aria-label="تغییر وضعیت منوی ناوبری"
             aria-expanded={isMenuOpen}
           >
-            <span className="sr-only">Toggle navigation</span>
+            <span className="sr-only">باز کردن منو</span>
             <svg
               aria-hidden
               className="h-5 w-5"
@@ -175,7 +177,7 @@ export function SiteHeader() {
               stroke="currentColor"
               strokeWidth="1.5"
             >
-              <title>Open menu</title>
+              <title>Toggle menu</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -190,17 +192,17 @@ export function SiteHeader() {
       <div
         className={clsx(
           "md:hidden",
-          isMenuOpen ? "border-t border-white/10 bg-slate-950/95" : "hidden",
+          isMenuOpen ? "border-t border-emerald-100 bg-white" : "hidden",
         )}
       >
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-4 sm:px-10">
-          <nav className="flex flex-col gap-2 text-sm font-medium text-slate-200">
+          <nav className="flex flex-col gap-2 text-sm font-semibold text-slate-700">
             {navItems.map((item) => {
               if (item.disabled) {
                 return (
                   <span
                     key={item.label}
-                    className="cursor-not-allowed rounded-2xl border border-white/10 px-4 py-2 text-slate-600"
+                    className="cursor-not-allowed rounded-2xl border border-emerald-100 px-4 py-2 text-slate-400"
                     aria-disabled
                   >
                     {item.label}
@@ -208,9 +210,11 @@ export function SiteHeader() {
                 );
               }
 
+              const hrefWithoutHash = item.href.split("#")[0];
               const isActive =
-                pathname === item.href ||
-                (item.href !== "/" && pathname.startsWith(item.href));
+                pathname === hrefWithoutHash ||
+                (hrefWithoutHash !== "/" &&
+                  pathname.startsWith(hrefWithoutHash));
 
               return (
                 <Link
@@ -219,8 +223,8 @@ export function SiteHeader() {
                   className={clsx(
                     "rounded-2xl border px-4 py-2 transition",
                     isActive
-                      ? "border-teal-400/40 bg-teal-500/20 text-teal-100"
-                      : "border-white/10 bg-white/5 text-slate-200 hover:text-white",
+                      ? "border-emerald-300 bg-emerald-100 text-emerald-700"
+                      : "border-emerald-100 bg-white/60 text-slate-700 hover:text-emerald-700",
                   )}
                 >
                   {item.label}

@@ -210,7 +210,9 @@ export const mockBlogInsights: BlogInsightsSummary = {
   lastPublishedAt:
     mockBlogPosts
       .filter((post) => post.publishedAt)
-      .sort((a, b) =>
-        new Date(b.publishedAt ?? 0).getTime() - new Date(a.publishedAt ?? 0).getTime(),
+      .sort(
+        (a, b) =>
+          new Date(b.publishedAt ?? 0).getTime() -
+          new Date(a.publishedAt ?? 0).getTime(),
       )[0]?.publishedAt ?? null,
 };

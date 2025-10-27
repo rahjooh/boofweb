@@ -6,8 +6,8 @@ import {
   isForbiddenError,
   isUnauthorizedError,
 } from "@/lib/api-client";
-import type { User } from "@/lib/types";
 import { mockProducts } from "@/lib/mock-data";
+import type { User } from "@/lib/types";
 import { ProductsView } from "./products-view";
 import { PublicProductsView } from "./public-products-view";
 

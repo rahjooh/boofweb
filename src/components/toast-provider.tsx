@@ -1,5 +1,6 @@
 "use client";
 
+import { clsx } from "clsx";
 import {
   createContext,
   type PropsWithChildren,
@@ -10,7 +11,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { clsx } from "clsx";
 
 export type ToastKind = "success" | "error" | "info";
 
@@ -65,7 +65,9 @@ export function ToastProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     return () => {
-      timersRef.current.forEach((timeoutId) => window.clearTimeout(timeoutId));
+      timersRef.current.forEach((timeoutId) => {
+        window.clearTimeout(timeoutId);
+      });
       timersRef.current.clear();
     };
   }, []);
@@ -80,9 +82,8 @@ export function ToastProvider({ children }: PropsWithChildren) {
       {children}
       <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex flex-col items-center gap-3 pb-6">
         {toasts.map((toast) => (
-          <div
+          <output
             key={toast.id}
-            role="status"
             aria-live="polite"
             className={clsx(
               "pointer-events-auto flex w-[min(420px,90vw)] items-start gap-3 rounded-2xl border px-5 py-4 shadow-lg",
@@ -97,7 +98,9 @@ export function ToastProvider({ children }: PropsWithChildren) {
             <div className="flex-1">
               <p className="text-sm font-semibold">{toast.title}</p>
               {toast.description ? (
-                <p className="mt-1 text-xs text-slate-300">{toast.description}</p>
+                <p className="mt-1 text-xs text-slate-300">
+                  {toast.description}
+                </p>
               ) : null}
             </div>
             <button
@@ -107,7 +110,7 @@ export function ToastProvider({ children }: PropsWithChildren) {
             >
               Close
             </button>
-          </div>
+          </output>
         ))}
       </div>
     </ToastContext.Provider>

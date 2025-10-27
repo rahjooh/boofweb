@@ -1,23 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Vazirmatn } from "next/font/google";
 import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
 import { AppProviders } from "./providers";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const vazirmatn = Vazirmatn({
+  variable: "--font-vazirmatn",
+  subsets: ["arabic", "latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Boofshop Experience Console",
+  title: "لابراتوار پت | تغذیه تخصصی سگ‌ها",
   description:
-    "Operational console for Boofshop frontend teams to manage catalog, orders, and delivery readiness.",
+    "مکمل‌ها و برنامه‌های تغذیه‌ای علمی برای سگ‌های خانگی با ارسال منظم، پشتیبانی دامپزشکی و محتوای فارسی.",
 };
 
 export default function RootLayout({
@@ -26,9 +22,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="fa" dir="rtl">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-transparent antialiased`}
+        className={`${vazirmatn.variable} min-h-screen bg-transparent font-sans antialiased`}
       >
         <AppProviders>
           <div className="flex min-h-screen flex-col">
@@ -36,10 +32,10 @@ export default function RootLayout({
             <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-12 sm:px-10">
               {children}
             </main>
-            <footer className="border-t border-white/5 bg-slate-950/60 py-6 text-center text-xs text-slate-500">
+            <footer className="border-t border-emerald-100/60 bg-emerald-50/80 py-6 text-center text-xs text-emerald-700">
               <p>
-                Boofshop Frontend Suite · Crafted for parity with the Go
-                backend · Tailwind-driven design
+                لابراتوار پت · ساخته شده با عشق به حیوانات خانگی · پشتیبانی
+                تلفنی ۷ روز هفته
               </p>
             </footer>
           </div>

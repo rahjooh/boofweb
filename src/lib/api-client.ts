@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { getApiBaseUrl, getMockMode } from "./env";
+import { logger } from "./logger";
 import {
   mockBlogInsights,
   mockBlogPosts,
@@ -11,12 +12,12 @@ import type {
   ActivateUserInput,
   Address,
   AddressInput,
-  CreateAddressInput,
-  CreateOrderInput,
-  CreateUserInput,
   BlogInsightsSummary,
   BlogPost,
   BlogPostInput,
+  CreateAddressInput,
+  CreateOrderInput,
+  CreateUserInput,
   HealthResponse,
   LoginStartInput,
   LoginVerifyInput,
@@ -187,23 +188,25 @@ function isApiClientError(error: unknown): error is ApiClientError {
   return error instanceof Error && "status" in error;
 }
 
-
 function isNetworkError(error: unknown): error is TypeError {
-    if (!(error instanceof TypeError)) {
-        return false;
-    }
+  if (!(error instanceof TypeError)) {
+    return false;
+  }
 
-    if (typeof error.message === "string" && error.message.toLowerCase().includes("fetch failed")) {
-        return true;
-    }
+  if (
+    typeof error.message === "string" &&
+    error.message.toLowerCase().includes("fetch failed")
+  ) {
+    return true;
+  }
 
-    const cause = (error as { cause?: unknown }).cause;
-    return Boolean(
-        cause &&
-        typeof cause === "object" &&
-        "code" in cause &&
-        typeof (cause as { code?: unknown }).code === "string",
-    );
+  const cause = (error as { cause?: unknown }).cause;
+  return Boolean(
+    cause &&
+      typeof cause === "object" &&
+      "code" in cause &&
+      typeof (cause as { code?: unknown }).code === "string",
+  );
 }
 
 export function isUnauthorizedError(error: unknown): error is ApiClientError {
@@ -217,6 +220,8 @@ export function isForbiddenError(error: unknown): error is ApiClientError {
 export function isNotFoundError(error: unknown): error is ApiClientError {
   return isApiClientError(error) && error.status === 404;
 }
+
+const apiLogger = logger.child({ scope: "api-client" });
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const {
@@ -263,7 +268,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
           message = fallbackText;
         }
       } catch (textError) {
-        console.error("Failed to read error response", textError);
+        apiLogger.error("Failed to read error response body", {
+          error: textError,
+          path,
+        });
       }
     }
 
@@ -302,7 +310,7 @@ async function safeRequest<T>(
       }
       throw error;
     }
-    console.warn("Falling back to mock data due to API error", error);
+    apiLogger.warn("Falling back to mock data due to API error", { error });
     return fallback;
   }
 }
@@ -316,11 +324,15 @@ export async function getHealth(init?: RequestInit): Promise<HealthResponse> {
 }
 
 export async function getProducts(init?: RequestInit): Promise<Product[]> {
-  return safeRequest(async () => {
-    const data = await request<unknown>("/api/v1/products", init);
-    const parsed = z.array(productSchema).parse(data);
-    return parsed;
-  }, mockProducts, { allowAuthFallback: true });
+  return safeRequest(
+    async () => {
+      const data = await request<unknown>("/api/v1/products", init);
+      const parsed = z.array(productSchema).parse(data);
+      return parsed;
+    },
+    mockProducts,
+    { allowAuthFallback: true },
+  );
 }
 
 export async function getProduct(
@@ -351,17 +363,20 @@ export async function getProducerBlogPosts(
   producerId: string,
   init?: RequestInit,
 ): Promise<BlogPost[]> {
-  return safeRequest(async () => {
-    const data = await request<unknown>(
-      `/api/v1/producers/${producerId}/blog-posts`,
-      {
-        method: "GET",
-        cache: "no-store",
-        ...init,
-      },
-    );
-    return z.array(blogPostSchema).parse(data);
-  }, mockBlogPosts.filter((post) => post.producerId === producerId));
+  return safeRequest(
+    async () => {
+      const data = await request<unknown>(
+        `/api/v1/producers/${producerId}/blog-posts`,
+        {
+          method: "GET",
+          cache: "no-store",
+          ...init,
+        },
+      );
+      return z.array(blogPostSchema).parse(data);
+    },
+    mockBlogPosts.filter((post) => post.producerId === producerId),
+  );
 }
 
 export async function getProducerBlogPost(
@@ -369,17 +384,22 @@ export async function getProducerBlogPost(
   postId: string,
   init?: RequestInit,
 ): Promise<BlogPost | undefined> {
-  return safeRequest(async () => {
-    const data = await request<unknown>(
-      `/api/v1/producers/${producerId}/blog-posts/${postId}`,
-      {
-        method: "GET",
-        cache: "no-store",
-        ...init,
-      },
-    );
-    return blogPostSchema.parse(data);
-  }, mockBlogPosts.find((post) => post.producerId === producerId && post.id === postId));
+  return safeRequest(
+    async () => {
+      const data = await request<unknown>(
+        `/api/v1/producers/${producerId}/blog-posts/${postId}`,
+        {
+          method: "GET",
+          cache: "no-store",
+          ...init,
+        },
+      );
+      return blogPostSchema.parse(data);
+    },
+    mockBlogPosts.find(
+      (post) => post.producerId === producerId && post.id === postId,
+    ),
+  );
 }
 
 export async function getProducerBlogInsights(
@@ -403,19 +423,23 @@ export async function getStorefrontBlogPosts(
   producerId: string,
   init?: RequestInit,
 ): Promise<BlogPost[]> {
-  return safeRequest(async () => {
-    const data = await request<unknown>(
-      `/api/v1/storefronts/${producerId}/blog-posts`,
-      {
-        method: "GET",
-        next: { revalidate: 300 },
-        ...init,
-      },
-    );
-    return z.array(blogPostSchema).parse(data);
-  },
-  mockBlogPosts.filter((post) => !post.isDraft && post.producerId === producerId),
-  { allowAuthFallback: true });
+  return safeRequest(
+    async () => {
+      const data = await request<unknown>(
+        `/api/v1/storefronts/${producerId}/blog-posts`,
+        {
+          method: "GET",
+          next: { revalidate: 300 },
+          ...init,
+        },
+      );
+      return z.array(blogPostSchema).parse(data);
+    },
+    mockBlogPosts.filter(
+      (post) => !post.isDraft && post.producerId === producerId,
+    ),
+    { allowAuthFallback: true },
+  );
 }
 
 export async function getStorefrontBlogPost(
@@ -423,21 +447,24 @@ export async function getStorefrontBlogPost(
   slug: string,
   init?: RequestInit,
 ): Promise<BlogPost | undefined> {
-  return safeRequest(async () => {
-    const data = await request<unknown>(
-      `/api/v1/storefronts/${producerId}/blog-posts/${slug}`,
-      {
-        method: "GET",
-        next: { revalidate: 300 },
-        ...init,
-      },
-    );
-    return blogPostSchema.parse(data);
-  },
-  mockBlogPosts.find(
-    (post) => !post.isDraft && post.producerId === producerId && post.slug === slug,
-  ),
-  { allowAuthFallback: true });
+  return safeRequest(
+    async () => {
+      const data = await request<unknown>(
+        `/api/v1/storefronts/${producerId}/blog-posts/${slug}`,
+        {
+          method: "GET",
+          next: { revalidate: 300 },
+          ...init,
+        },
+      );
+      return blogPostSchema.parse(data);
+    },
+    mockBlogPosts.find(
+      (post) =>
+        !post.isDraft && post.producerId === producerId && post.slug === slug,
+    ),
+    { allowAuthFallback: true },
+  );
 }
 
 function buildMockUser(): User {
@@ -469,10 +496,11 @@ function buildMockBlogInsights(producerId: string): BlogInsightsSummary {
   }
 
   const published = posts.filter((post) => !post.isDraft);
-  const lastPublishedAt = published
-    .map((post) => post.publishedAt)
-    .filter((value): value is string => Boolean(value))
-    .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())[0] ?? null;
+  const lastPublishedAt =
+    published
+      .map((post) => post.publishedAt)
+      .filter((value): value is string => Boolean(value))
+      .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())[0] ?? null;
 
   return {
     totalPosts: posts.length,
@@ -713,10 +741,9 @@ export async function getCurrentUser(init?: RequestInit): Promise<User> {
       throw error;
     }
 
-    console.warn(
-      "Assuming unauthenticated session due to network error",
+    apiLogger.warn("Assuming unauthenticated session due to network error", {
       error,
-    );
+    });
     const unauthorizedError = new Error(
       "Authentication required",
     ) as ApiClientError;

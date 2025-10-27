@@ -2,12 +2,13 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  useMemo,
-  useState,
-  useEffect,
   type ChangeEvent,
   type FormEvent,
+  useEffect,
+  useMemo,
+  useState,
 } from "react";
+import { useToast } from "@/components/toast-provider";
 import {
   createProducerBlogPost,
   deleteProducerBlogPost,
@@ -18,7 +19,6 @@ import {
 import { useUnauthorizedRedirect } from "@/lib/auth";
 import type { BlogInsightsSummary, BlogPost, BlogPostInput } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
-import { useToast } from "@/components/toast-provider";
 
 interface ProducerBlogViewProps {
   producerId: string;
@@ -52,9 +52,7 @@ export function ProducerBlogView({
     initialPosts[0]?.id ?? "new",
   );
   const [formState, setFormState] = useState<FormState>(() =>
-    initialPosts[0]
-      ? mapPostToForm(initialPosts[0])
-      : createEmptyFormState(),
+    initialPosts[0] ? mapPostToForm(initialPosts[0]) : createEmptyFormState(),
   );
 
   const postsQuery = useQuery({
@@ -74,8 +72,9 @@ export function ProducerBlogView({
 
   const posts = postsQuery.data ?? [];
   const sortedPosts = useMemo(() => {
-    return [...posts].sort((a, b) =>
-      new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+    return [...posts].sort(
+      (a, b) =>
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
     );
   }, [posts]);
 
@@ -95,7 +94,8 @@ export function ProducerBlogView({
     }
   }, [currentPost, isNew]);
 
-  const handleFieldChange = (field: keyof FormState) =>
+  const handleFieldChange =
+    (field: keyof FormState) =>
     (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const value = event.target.value;
       setFormState((previous) => ({ ...previous, [field]: value }));
@@ -111,7 +111,8 @@ export function ProducerBlogView({
       createProducerBlogPost(producerId, input),
     onMutate: async (input) => {
       await queryClient.cancelQueries({ queryKey: postsQueryKey });
-      const previous = queryClient.getQueryData<BlogPost[]>(postsQueryKey) ?? [];
+      const previous =
+        queryClient.getQueryData<BlogPost[]>(postsQueryKey) ?? [];
       const now = new Date().toISOString();
       const tempId = `temp-${Math.random().toString(16).slice(2)}`;
       const slug = input.slug ?? slugify(input.title);
@@ -153,9 +154,11 @@ export function ProducerBlogView({
         title: post.isDraft ? "Draft saved" : "Post published",
         kind: post.isDraft ? "info" : "success",
       });
-      queryClient.invalidateQueries({ queryKey: insightsQueryKey }).catch(() => {
-        // ignore
-      });
+      queryClient
+        .invalidateQueries({ queryKey: insightsQueryKey })
+        .catch(() => {
+          // ignore
+        });
     },
   });
 
@@ -164,7 +167,8 @@ export function ProducerBlogView({
       updateProducerBlogPost(producerId, input.postId, input.payload),
     onMutate: async ({ postId, payload }) => {
       await queryClient.cancelQueries({ queryKey: postsQueryKey });
-      const previous = queryClient.getQueryData<BlogPost[]>(postsQueryKey) ?? [];
+      const previous =
+        queryClient.getQueryData<BlogPost[]>(postsQueryKey) ?? [];
       const now = new Date().toISOString();
       queryClient.setQueryData(postsQueryKey, (current?: BlogPost[]) => {
         const items = current ?? [];
@@ -217,9 +221,11 @@ export function ProducerBlogView({
         title: post.isDraft ? "Draft updated" : "Post updated",
         kind: post.isDraft ? "info" : "success",
       });
-      queryClient.invalidateQueries({ queryKey: insightsQueryKey }).catch(() => {
-        // ignore
-      });
+      queryClient
+        .invalidateQueries({ queryKey: insightsQueryKey })
+        .catch(() => {
+          // ignore
+        });
     },
   });
 
@@ -227,7 +233,8 @@ export function ProducerBlogView({
     mutationFn: (postId: string) => deleteProducerBlogPost(producerId, postId),
     onMutate: async (postId: string) => {
       await queryClient.cancelQueries({ queryKey: postsQueryKey });
-      const previous = queryClient.getQueryData<BlogPost[]>(postsQueryKey) ?? [];
+      const previous =
+        queryClient.getQueryData<BlogPost[]>(postsQueryKey) ?? [];
       queryClient.setQueryData(
         postsQueryKey,
         previous.filter((post) => post.id !== postId),
@@ -249,11 +256,14 @@ export function ProducerBlogView({
         title: "Post deleted",
         kind: "success",
       });
-      queryClient.invalidateQueries({ queryKey: insightsQueryKey }).catch(() => {
-        // ignore
-      });
-      setSelectedId((current) => {
-        const remaining = queryClient.getQueryData<BlogPost[]>(postsQueryKey) ?? [];
+      queryClient
+        .invalidateQueries({ queryKey: insightsQueryKey })
+        .catch(() => {
+          // ignore
+        });
+      setSelectedId((_current) => {
+        const remaining =
+          queryClient.getQueryData<BlogPost[]>(postsQueryKey) ?? [];
         return remaining[0]?.id ?? "new";
       });
     },
@@ -283,7 +293,9 @@ export function ProducerBlogView({
     if (!currentPost) {
       return;
     }
-    if (!window.confirm(`Delete “${currentPost.title}”? This cannot be undone.`)) {
+    if (
+      !window.confirm(`Delete “${currentPost.title}”? This cannot be undone.`)
+    ) {
       return;
     }
     deleteMutation.mutate(currentPost.id);
@@ -308,7 +320,11 @@ export function ProducerBlogView({
             <InsightStat label="Drafts" value={insights.draftPosts} />
             <InsightStat
               label="Last publish"
-              value={insights.lastPublishedAt ? formatDate(insights.lastPublishedAt) : "—"}
+              value={
+                insights.lastPublishedAt
+                  ? formatDate(insights.lastPublishedAt)
+                  : "—"
+              }
             />
           </div>
         </header>
@@ -341,7 +357,9 @@ export function ProducerBlogView({
                   }
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-semibold text-white">{post.title}</span>
+                    <span className="font-semibold text-white">
+                      {post.title}
+                    </span>
                     <StatusBadge isDraft={post.isDraft} />
                   </div>
                   <p className="mt-1 text-xs text-slate-400">
@@ -372,7 +390,9 @@ export function ProducerBlogView({
                 <h2 className="text-xl font-semibold text-white">
                   {isNew ? "New post" : "Edit post"}
                 </h2>
-                {!isNew ? <StatusBadge isDraft={currentPost?.isDraft ?? true} /> : null}
+                {!isNew ? (
+                  <StatusBadge isDraft={currentPost?.isDraft ?? true} />
+                ) : null}
               </div>
               <p className="text-xs text-slate-400">
                 {isNew
@@ -412,7 +432,9 @@ export function ProducerBlogView({
                 />
               </label>
               <label className="flex flex-col gap-2 text-sm text-slate-200">
-                <span className="font-medium text-slate-100">Cover image URL</span>
+                <span className="font-medium text-slate-100">
+                  Cover image URL
+                </span>
                 <input
                   value={formState.coverImageUrl}
                   onChange={handleFieldChange("coverImageUrl")}
@@ -432,7 +454,9 @@ export function ProducerBlogView({
             </div>
 
             <label className="flex flex-col gap-2 text-sm text-slate-200">
-              <span className="font-medium text-slate-100">Body (Markdown)</span>
+              <span className="font-medium text-slate-100">
+                Body (Markdown)
+              </span>
               <textarea
                 value={formState.contentMarkdown}
                 onChange={handleFieldChange("contentMarkdown")}
@@ -484,7 +508,11 @@ export function ProducerBlogView({
                   disabled={!canSave || isSaving}
                   className="rounded-full border border-teal-400/40 bg-teal-500/10 px-6 py-2 text-sm font-semibold text-teal-100 transition hover:border-teal-300 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {isSaving ? "Saving..." : isNew ? "Create post" : "Save changes"}
+                  {isSaving
+                    ? "Saving..."
+                    : isNew
+                      ? "Create post"
+                      : "Save changes"}
                 </button>
               </div>
             </div>
@@ -495,7 +523,13 @@ export function ProducerBlogView({
   );
 }
 
-function InsightStat({ label, value }: { label: string; value: string | number }) {
+function InsightStat({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | number;
+}) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
       <p className="text-xs uppercase tracking-[0.35em] text-slate-400">

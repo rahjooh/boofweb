@@ -1,13 +1,14 @@
+import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { Metadata } from "next";
 import {
   getStorefrontBlogPost,
   getStorefrontBlogPosts,
 } from "@/lib/api-client";
-import { mockBlogPosts } from "@/lib/mock-data";
 import { markdownToHtml } from "@/lib/markdown";
-import { formatDate } from "@/lib/utils";
+import { mockBlogPosts } from "@/lib/mock-data";
+import { formatDate, getProducerDisplayName } from "@/lib/utils";
 
 export const revalidate = 300;
 
@@ -25,13 +26,14 @@ export async function generateMetadata({
   params,
 }: StorefrontBlogPostPageProps): Promise<Metadata> {
   const { producerId, slug } = await params;
+  const producerName = getProducerDisplayName(producerId);
   try {
     const post = await getStorefrontBlogPost(producerId, slug);
     if (!post) {
-      return { title: "Blog post" };
+      return { title: "مطلب وبلاگ" };
     }
     return {
-      title: `${post.title} · ${capitalize(producerId)} blog`,
+      title: `${post.title} · وبلاگ ${producerName}`,
       description: post.excerpt,
       alternates: {
         canonical: `/store/${producerId}/blog/${post.slug}`,
@@ -49,8 +51,8 @@ export async function generateMetadata({
         images: post.coverImageUrl ? [post.coverImageUrl] : undefined,
       },
     };
-  } catch (error) {
-    return { title: "Blog post" };
+  } catch (_error) {
+    return { title: "مطلب وبلاگ" };
   }
 }
 
@@ -65,9 +67,8 @@ export default async function StorefrontBlogPostPage({
 
   const html = markdownToHtml(post.contentMarkdown);
   const related = await getStorefrontBlogPosts(producerId).catch(() => []);
-  const recent = related
-    .filter((item) => item.slug !== post.slug)
-    .slice(0, 3);
+  const recent = related.filter((item) => item.slug !== post.slug).slice(0, 3);
+  const producerName = getProducerDisplayName(producerId);
 
   return (
     <div className="space-y-10">
@@ -76,17 +77,19 @@ export default async function StorefrontBlogPostPage({
           href={`/store/${producerId}/blog`}
           className="inline-flex items-center gap-2 text-teal-200 hover:text-white"
         >
-          ← Back to blog
+          بازگشت به وبلاگ ←
         </Link>
       </nav>
-
       <header className="space-y-4">
         <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.35em] text-teal-200">
-          <span>{capitalize(producerId)}</span>
+          <span>{producerName}</span>
           <span className="text-slate-500">•</span>
           <span>{formatDate(post.publishedAt ?? post.updatedAt)}</span>
           {post.tags.map((tag) => (
-            <span key={tag} className="rounded-full border border-white/10 px-3 py-1 text-[10px] text-slate-200">
+            <span
+              key={tag}
+              className="rounded-full border border-white/10 px-3 py-1 text-[10px] text-slate-200"
+            >
               #{tag}
             </span>
           ))}
@@ -97,23 +100,27 @@ export default async function StorefrontBlogPostPage({
         <p className="text-base text-slate-300">{post.excerpt}</p>
         {post.coverImageUrl ? (
           <div className="overflow-hidden rounded-3xl border border-white/10">
-            <img
+            <Image
               src={post.coverImageUrl}
-              alt=""
+              alt={post.title}
+              width={1200}
+              height={320}
               className="h-[320px] w-full object-cover"
+              priority
+              unoptimized
             />
           </div>
         ) : null}
       </header>
-
       <article
         className="space-y-4"
         dangerouslySetInnerHTML={{ __html: html }}
       />
-
       {recent.length ? (
         <section className="space-y-4 rounded-3xl border border-white/10 bg-slate-950/60 p-6">
-          <h2 className="text-xl font-semibold text-white">More from the producer</h2>
+          <h2 className="text-xl font-semibold text-white">
+            مطالب بیشتر از {producerName}
+          </h2>
           <div className="grid gap-4 md:grid-cols-3">
             {recent.map((item) => (
               <Link
@@ -122,7 +129,7 @@ export default async function StorefrontBlogPostPage({
                 className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-200 transition hover:border-teal-400/40 hover:text-white"
               >
                 <span className="text-xs uppercase tracking-[0.35em] text-teal-200">
-                  {item.tags[0] ?? "update"}
+                  {item.tags[0] ?? "به‌روزرسانی"}
                 </span>
                 <span className="text-base font-semibold text-white">
                   {item.title}
@@ -137,9 +144,4 @@ export default async function StorefrontBlogPostPage({
       ) : null}
     </div>
   );
-}
-
-function capitalize(value: string) {
-  if (!value) return "";
-  return value.charAt(0).toUpperCase() + value.slice(1);
 }
